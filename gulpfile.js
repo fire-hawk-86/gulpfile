@@ -1,26 +1,29 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync').create();
+var gulp = require('gulp')
+var sass = require('gulp-sass')
+var pug = require('gulp-pug')
+var browserSync = require('browser-sync').create()
 
-
-gulp.task('sass', function () {
-    return gulp.src('./src/scss/**/*.scss')
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest('./dist/css'))
-        .pipe(browserSync.stream());
-});
-
-gulp.task('copy', function () {
-    gulp.src('./src/*.html')
-        .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('default', ['sass'], function () {
-
+gulp.task('watch', ['sass', 'pug'], function () {
+    
     browserSync.init({
         server: "./dist"
-    });
+    })
 
-    gulp.watch('./src/scss/**/*.scss', ['sass']);
-    gulp.watch("./src/*.html", ['copy']).on('change', browserSync.reload);
-});
+    gulp.watch(['./src/scss/**/*.scss', './src/scss/**/*.sass'], ['sass'])
+    gulp.watch("./src/*.pug", ['pug']).on('change', browserSync.reload)
+})
+
+gulp.task('sass', function () {
+    return gulp.src(['./src/scss/**/*.scss', './src/scss/**/*.sass'])
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./dist/css'))
+        .pipe(browserSync.stream())
+})
+
+gulp.task('pug', function () {
+    gulp.src('./src/*.pug')
+        .pipe(pug({ pretty: true }))
+        .pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('default', ['watch'])
