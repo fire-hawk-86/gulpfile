@@ -3,7 +3,7 @@ var sass = require('gulp-sass')
 var pug = require('gulp-pug')
 var browserSync = require('browser-sync').create()
 
-gulp.task('watch', ['sass', 'pug'], function () {
+gulp.task('watch', ['sass', 'pug', 'html'], function () {
     
     browserSync.init({
         server: "./dist"
@@ -23,6 +23,11 @@ gulp.task('sass', function () {
 gulp.task('pug', function () {
     gulp.src('./src/*.pug')
         .pipe(pug({ pretty: true }))
+        .pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('html', function () {
+    gulp.src('./src/*.html')
         .pipe(gulp.dest('./dist/'))
 })
 
